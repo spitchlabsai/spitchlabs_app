@@ -99,6 +99,38 @@ export const metadata: Metadata = {
   description: "spitchlabs dashboard",
 };
 
+// export default async function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   const supabase = await createSupabaseServerClient();
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
+
+//   return (
+//     <html lang="en">
+//       <body>
+//         <Providers>
+//           <UserProvider user={user}>
+//             <SidebarProvider>
+//               <AppSidebar>
+//                 <NavMain items={navigation} />
+//               </AppSidebar>
+//               <SidebarInset>
+//                 <SiteHeader /> 
+//                 {children}
+//                 </SidebarInset>
+//             </SidebarProvider>
+//           </UserProvider>
+//         </Providers>
+//       </body>
+//     </html>
+//   );
+// }
+
+
 export default async function RootLayout({
   children,
 }: {
@@ -114,15 +146,24 @@ export default async function RootLayout({
       <body>
         <Providers>
           <UserProvider user={user}>
-            <SidebarProvider>
-              <AppSidebar>
-                <NavMain items={navigation} />
-              </AppSidebar>
-              <SidebarInset>
-                <SiteHeader /> 
-                {children}
+            {user ? (
+              // 🔒 Authenticated Layout
+              <SidebarProvider>
+                <AppSidebar>
+                  <NavMain items={navigation} />
+                </AppSidebar>
+                <SidebarInset>
+                  <SiteHeader />
+                  {children}
                 </SidebarInset>
-            </SidebarProvider>
+              </SidebarProvider>
+            ) : (
+              // 🌐 Public Layout (no sidebar)
+              <div className="min-h-screen flex flex-col">
+                {/* <SiteHeader /> */}
+                <main className="flex-1">{children}</main>
+              </div>
+            )}
           </UserProvider>
         </Providers>
       </body>

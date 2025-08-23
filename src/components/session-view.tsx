@@ -61,15 +61,7 @@ export const SessionView = ({
             description: (
               <p className="w-full">
                 {reason}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://docs.livekit.io/agents/start/voice-ai/"
-                  className="whitespace-nowrap underline"
-                >
-                  See quickstart guide
-                </a>
-                .
+      
               </p>
             ),
           });
@@ -91,7 +83,7 @@ export const SessionView = ({
   return (
     <main
       ref={ref}
-      inert={disabled}
+      // inert={disabled}
       className={
         // prevent page scrollbar
         // when !chatOpen due to 'translate-y-20'

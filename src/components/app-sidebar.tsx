@@ -37,8 +37,6 @@ import {
 const navigation = [
   { title: "Dashboard", url: "/dashboard" },
   { title: "Agent Sessions", url: "/agent" },
-  { title: "Users", url: "/users" },
-  { title: "Settings", url: "/settings" },
   { title: "Agent", url: "/caller" },
 ];
 
@@ -64,8 +62,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navigation} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

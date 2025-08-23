@@ -16,7 +16,7 @@ import uvicorn
 from docprocessor import DocumentProcessor
 from vector_search import VectorSearchService
 from spitchagent import EnhancedAgentService
-from spitchagent import create_entrypoint
+# from spitchagent import create_entrypoint
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -213,119 +213,119 @@ async def delete_document(user_id: str, document_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/agent/start", response_model=AgentResponse)
-async def start_agent_session(session_request: AgentSessionRequest):
-    """Start a new LiveKit agent process for a user"""
-    try:
-        user_id = session_request.user_id
-        session_id = f"agent_{user_id}_{uuid.uuid4().hex[:8]}"
+# @app.post("/agent/start", response_model=AgentResponse)
+# async def start_agent_session(session_request: AgentSessionRequest):
+#     """Start a new LiveKit agent process for a user"""
+#     try:
+#         user_id = session_request.user_id
+#         session_id = f"agent_{user_id}_{uuid.uuid4().hex[:8]}"
         
-        # Check if user already has an active agent
-        if user_id in active_agent_processes:
-            return AgentResponse(
-                status="already_running",
-                message=f"Agent already running for user {user_id}",
-                session_id=f"agent_{user_id}_existing"
-            )
+#         # Check if user already has an active agent
+#         if user_id in active_agent_processes:
+#             return AgentResponse(
+#                 status="already_running",
+#                 message=f"Agent already running for user {user_id}",
+#                 session_id=f"agent_{user_id}_existing"
+#             )
         
-        # Create environment for the agent subprocess
-        agent_env = os.environ.copy()
-        agent_env.update({
-            'USER_ID': user_id,
-            'SUPABASE_URL': SUPABASE_URL,
-            'SUPABASE_KEY': SUPABASE_KEY,
-        })
+#         # Create environment for the agent subprocess
+#         agent_env = os.environ.copy()
+#         agent_env.update({
+#             'USER_ID': user_id,
+#             'SUPABASE_URL': SUPABASE_URL,
+#             'SUPABASE_KEY': SUPABASE_KEY,
+#         })
         
-        # Start the agent as a subprocess
-        cmd = ['python', 'enhanced_livekit_agent.py']
-        process = subprocess.Popen(
-            cmd,
-            env=agent_env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            preexec_fn=os.setsid if os.name != 'nt' else None
-        )
+#         # Start the agent as a subprocess
+#         cmd = ['python', 'enhanced_livekit_agent.py']
+#         process = subprocess.Popen(
+#             cmd,
+#             env=agent_env,
+#             stdout=subprocess.PIPE,
+#             stderr=subprocess.PIPE,
+#             preexec_fn=os.setsid if os.name != 'nt' else None
+#         )
         
-        # Store the process
-        active_agent_processes[user_id] = process
+#         # Store the process
+#         active_agent_processes[user_id] = process
         
-        # Get knowledge base info
-        kb_summary = await vector_service.get_user_knowledge_summary(user_id)
+#         # Get knowledge base info
+#         kb_summary = await vector_service.get_user_knowledge_summary(user_id)
         
-        return AgentResponse(
-            status="started",
-            message=f"LiveKit agent started for user {user_id}. KB: {kb_summary['total_documents']} docs, {kb_summary['total_chunks']} chunks.",
-            session_id=session_id
-        )
+#         return AgentResponse(
+#             status="started",
+#             message=f"LiveKit agent started for user {user_id}. KB: {kb_summary['total_documents']} docs, {kb_summary['total_chunks']} chunks.",
+#             session_id=session_id
+#         )
         
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to start agent: {str(e)}")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Failed to start agent: {str(e)}")
 
-@app.post("/agent/stop/{user_id}")
-async def stop_agent_session(user_id: str):
-    """Stop the LiveKit agent process for a user"""
-    try:
-        if user_id not in active_agent_processes:
-            return {"status": "not_found", "message": f"No active agent for user {user_id}"}
+# @app.post("/agent/stop/{user_id}")
+# async def stop_agent_session(user_id: str):
+#     """Stop the LiveKit agent process for a user"""
+#     try:
+#         if user_id not in active_agent_processes:
+#             return {"status": "not_found", "message": f"No active agent for user {user_id}"}
         
-        process = active_agent_processes[user_id]
+#         process = active_agent_processes[user_id]
         
-        # Terminate the process group (to kill any child processes too)
-        if os.name != 'nt':  # Unix/Linux/Mac
-            os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-        else:  # Windows
-            process.terminate()
+#         # Terminate the process group (to kill any child processes too)
+#         if os.name != 'nt':  # Unix/Linux/Mac
+#             os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+#         else:  # Windows
+#             process.terminate()
         
-        # Wait for process to end
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            if os.name != 'nt':
-                os.killpg(os.getpgid(process.pid), signal.SIGKILL)
-            else:
-                process.kill()
+#         # Wait for process to end
+#         try:
+#             process.wait(timeout=5)
+#         except subprocess.TimeoutExpired:
+#             if os.name != 'nt':
+#                 os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+#             else:
+#                 process.kill()
         
-        # Remove from active processes
-        del active_agent_processes[user_id]
+#         # Remove from active processes
+#         del active_agent_processes[user_id]
         
-        return {"status": "stopped", "message": f"Agent stopped for user {user_id}"}
+#         return {"status": "stopped", "message": f"Agent stopped for user {user_id}"}
         
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to stop agent: {str(e)}")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Failed to stop agent: {str(e)}")
 
-@app.get("/agent/sessions")
-async def get_active_sessions():
-    """Get information about active agent sessions"""
-    active_sessions = []
-    for user_id, process in list(active_agent_processes.items()):
-        if process.poll() is None:  # Process is still running
-            active_sessions.append({
-                "user_id": user_id,
-                "pid": process.pid,
-                "status": "running"
-            })
-        else:  # Process has ended
-            del active_agent_processes[user_id]
+# @app.get("/agent/sessions")
+# async def get_active_sessions():
+#     """Get information about active agent sessions"""
+#     active_sessions = []
+#     for user_id, process in list(active_agent_processes.items()):
+#         if process.poll() is None:  # Process is still running
+#             active_sessions.append({
+#                 "user_id": user_id,
+#                 "pid": process.pid,
+#                 "status": "running"
+#             })
+#         else:  # Process has ended
+#             del active_agent_processes[user_id]
             
-    return {
-        "active_sessions": active_sessions,
-        "total_active": len(active_sessions)
-    }
+#     return {
+#         "active_sessions": active_sessions,
+#         "total_active": len(active_sessions)
+#     }
 
-# Cleanup on app shutdown
-@app.on_event("shutdown")
-async def cleanup_agents():
-    """Clean up all agent processes on app shutdown"""
-    for user_id, process in active_agent_processes.items():
-        try:
-            if process.poll() is None:  # Still running
-                if os.name != 'nt':
-                    os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-                else:
-                    process.terminate()
-        except:
-            pass  # Process might already be dead
-    active_agent_processes.clear()
+# # Cleanup on app shutdown
+# @app.on_event("shutdown")
+# async def cleanup_agents():
+#     """Clean up all agent processes on app shutdown"""
+#     for user_id, process in active_agent_processes.items():
+#         try:
+#             if process.poll() is None:  # Still running
+#                 if os.name != 'nt':
+#                     os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+#                 else:
+#                     process.terminate()
+#         except:
+#             pass  # Process might already be dead
+#     active_agent_processes.clear()
 
 @app.get("/health")
 async def health_check():
