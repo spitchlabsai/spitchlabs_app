@@ -23,7 +23,7 @@ import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
-import {useUser} from "@/app/userProvider";
+import { useUser } from "@/app/userProvider";
 import {
   Sidebar,
   SidebarContent,
@@ -40,7 +40,6 @@ const navigation = [
   { title: "Agent", url: "/caller" },
 ];
 
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useUser();
   return (
@@ -50,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-5"
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
