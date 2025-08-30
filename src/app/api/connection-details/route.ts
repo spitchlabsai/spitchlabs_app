@@ -55,9 +55,10 @@ export async function POST(request: NextRequest) {
         metadata: JSON.stringify(userMetadata),
         // Optional: Set room configuration
         maxParticipants: 10,
-        emptyTimeout: 900, // x minutes
+        emptyTimeout: 3600, // x minutes
       })
       console.log('✅ Room created with metadata:', roomName)
+      await new Promise(resolve => setTimeout(resolve, 1000))
     } catch (error: any) {
       // Room might already exist, try to update it
       if (error.message?.includes('already exists') || error.code === 'ALREADY_EXISTS') {
@@ -124,7 +125,7 @@ function createParticipantToken(
 ): string {
   const at = new AccessToken(API_KEY, API_SECRET, {
     ...userInfo,
-    ttl: "1hr",
+    ttl: 7200,
   });
 
   // Grant: participant can join/publish/subscribe

@@ -8,7 +8,7 @@ import websockets
 from livekit import agents
 from livekit.agents import AgentSession, Agent, RoomInputOptions, JobContext
 from livekit.plugins import spitch, assemblyai, google, noise_cancellation, silero
-from vector_search import VectorSearchService
+from spitchproj.vector_search import VectorSearchService
 
 load_dotenv()
 
