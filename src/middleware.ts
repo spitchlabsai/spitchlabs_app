@@ -37,7 +37,7 @@ export default async function middleware(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   // ✅ Define all protected routes here
-  const protectedRoutes = ["/dashboard", "/caller", "/agent", "/admin"];
+  const protectedRoutes = ["/", "/caller", "/agent", "/admin"];
 
   // Check if request path starts with any protected route
   const isProtected = protectedRoutes.some((route) =>
@@ -57,7 +57,7 @@ export default async function middleware(req: NextRequest) {
     user
   ) {
     const redirectTo =
-      req.nextUrl.searchParams.get("redirectedFrom") || "/dashboard";
+      req.nextUrl.searchParams.get("redirectedFrom") || "/";
     return NextResponse.redirect(new URL(redirectTo, req.url));
   }
 
