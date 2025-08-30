@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       email,
       name: participantName,
       companyName: companyName,
-      agentName: agentName || "Angel",
+      agentName: agentName,
       createdAt: new Date().toISOString(),
       sessionType: 'voice_assistant'
     }
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
         userId,
         email,
         companyName: companyName,
-        agentName: agentName || "Angel",
+        agentName: agentName,
         joinedBy: participantIdentity,
         dispatchedAt: new Date().toISOString(),
       }),
