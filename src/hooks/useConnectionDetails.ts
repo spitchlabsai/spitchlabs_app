@@ -74,6 +74,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { decodeJwt } from 'jose';
+import {createSupabaseBrowserClient} from '@/lib/supabase/client'
 import { ConnectionDetails } from '@/app/api/connection-details/route';
 import { useSupabaseUser } from '@/hooks/useSupabaseUser'; // Update path if needed
 
@@ -84,6 +85,29 @@ export default function useConnectionDetails() {
   const [connectionDetails, setConnectionDetails] = useState<ConnectionDetails | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agentName, setAgentName] = useState("Angel"); // default fallback
+  const supabase = createSupabaseBrowserClient();
+  
+
+useEffect(() => {
+  const loadAgentName = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("agent_name")
+      .eq("id", user.id)
+      .single();
+
+    if (!error && data?.agent_name) {
+      setAgentName(data.agent_name);
+    }
+  };
+
+  loadAgentName();
+}, [user]);
+
+
 
   const fetchConnectionDetails = useCallback(async () => {
     if (userLoading) {
@@ -114,7 +138,9 @@ export default function useConnectionDetails() {
         body: JSON.stringify({
           userId: user.id,
           email: user.email,
-          name: user.user_metadata?.name || user.email?.split('@')[0]
+          name: user.user_metadata?.name || user.email?.split('@')[0],
+          companyName: user.user_metadata?.companyName,
+          agentName: agentName,
         })
       });
 

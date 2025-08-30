@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   Upload,
   Search,
@@ -36,8 +36,52 @@ const AgenticDocumentDashboard = () => {
   const [roomName, setRoomName] = useState("");
   // const { user, loading } = useSupabaseUser();
   const user = useUser();
+  const supabase = createSupabaseBrowserClient();
 
-  const API_BASE = "http://localhost:8000"; // Adjust this to your API URL
+
+  //agent name
+  const [agentName, setAgentName] = useState("");
+  const [agentNameSaved, setAgentNameSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("agent_name")
+        .eq("id", user.id)
+        .single();
+
+      if (!error && data?.agent_name) {
+        setAgentName(data.agent_name);
+        setAgentNameSaved(true);
+      }
+
+      setLoading(false);
+    };
+
+    loadProfile();
+  }, [user]);
+
+  const saveAgentName = async () => {
+    if (!user || agentName.trim() === "") return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id,agent_name: agentName })
+      .eq("id", user.id);
+
+    if (!error) {
+      setAgentNameSaved(true);
+    } else {
+      console.error("Failed to save agent name:", error.message);
+    }
+  };
+
+  const API_BASE = "http://172.174.243.254:8000"; // Adjust this to your API URL
 
   // Fetch user documents
   const fetchDocuments = async () => {
@@ -209,32 +253,7 @@ const AgenticDocumentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      {/* <div className="bg-white shadow-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-black p-3 rounded-xl">
-                <FileText className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Spitchlabs AI
-                </h1>
-                <p className="text-gray-600">Create your Sales Agent</p>
-              </div>
-            </div>
-            {/* <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                <p className="text-xs text-gray-500">Authenticated User</p>
-              </div>
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-medium">{user.email[0].toUpperCase()}</span>
-              </div>
-            </div> */}
-      {/*    </div>
-        </div>
-      </div> */}
+     
 
       {/* Stats Cards */}
       {/* <div className="max-w-7xl mx-auto px-6 py-8"> */}
@@ -471,71 +490,38 @@ const AgenticDocumentDashboard = () => {
             {/* Agent Sessions Tab */}
             {activeTab === "agent" && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">
-                    Agent Sessions
-                  </h3>
-                  <div className="bg-gray-50 rounded-xl p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">
-                      Start New Session
-                    </h4>
-                    <div className="flex space-x-4">
-                      <input
-                        type="text"
-                        value={roomName}
-                        onChange={(e) => setRoomName(e.target.value)}
-                        placeholder="Enter agent name..."
-                        className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      <button
-                        onClick={startAgentSession}
-                        className="px-6 py-3 bg-black text-white rounded-xl hover:bg-green-700 transition-colors flex items-center"
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Start Session
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      <div>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Agent Sessions
+        </h3>
+        <div className="bg-gray-50 rounded-xl p-6">
+          <h4 className="font-medium text-gray-900 mb-4">Create Agent</h4>
 
-                {/* Active Sessions */}
-                <div>
-                  <h4 className="text-md font-medium text-gray-900 mb-4">
-                    Active Sessions
-                  </h4>
-                  {agentSessions.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500">
-                      <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p>No active agent sessions</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {agentSessions.map((session, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center justify-between"
-                        >
-                          <div>
-                            <h5 className="font-medium text-gray-900">
-                              {session.room_name}
-                            </h5>
-                            <p className="text-sm text-gray-600">
-                              Session ID: {session.session_id}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => stopAgentSession(session.room_name)}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center"
-                          >
-                            <Square className="w-4 h-4 mr-2" />
-                            Stop
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+          <div className="flex space-x-4 items-center">
+            <input
+              type="text"
+              value={agentName}
+              onChange={(e) => setAgentName(e.target.value)}
+              placeholder="Enter agent name..."
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={agentNameSaved}
+            />
+
+            <button
+              onClick={saveAgentName}
+              disabled={agentNameSaved || loading || !agentName.trim()}
+              className={`px-6 py-3 rounded-xl flex items-center transition-colors ${
+                agentNameSaved
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-black text-white hover:bg-green-700"
+              }`}
+            >
+              {agentNameSaved ? "Agent Created" : "Save Agent Name"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
             )}
           </div>
         </div>
