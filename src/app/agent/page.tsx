@@ -81,7 +81,7 @@ const AgenticDocumentDashboard = () => {
     }
   };
 
-  const API_BASE = "http://172.174.243.254:8000"; // Adjust this to your API URL
+  const API_BASE = "https://apiend.spitchlabs.com"; // Adjust this to your API URL
 
   // Fetch user documents
   const fetchDocuments = async () => {
