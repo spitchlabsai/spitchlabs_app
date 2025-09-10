@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigation = [
-  { title: "Dashboard", url: "/dashboard" },
+  { title: "Dashboard", url: "/" },
   { title: "Agent Sessions", url: "/agent" },
   { title: "Agent", url: "/caller" },
 ];

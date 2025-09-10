@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   Upload,
   Search,
@@ -36,8 +36,52 @@ const AgenticDocumentDashboard = () => {
   const [roomName, setRoomName] = useState("");
   // const { user, loading } = useSupabaseUser();
   const user = useUser();
+  const supabase = createSupabaseBrowserClient();
 
-  const API_BASE = "http://localhost:8000"; // Adjust this to your API URL
+
+  //agent name
+  const [agentName, setAgentName] = useState("");
+  const [agentNameSaved, setAgentNameSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("agent_name")
+        .eq("id", user.id)
+        .single();
+
+      if (!error && data?.agent_name) {
+        setAgentName(data.agent_name);
+        setAgentNameSaved(true);
+      }
+
+      setLoading(false);
+    };
+
+    loadProfile();
+  }, [user]);
+
+  const saveAgentName = async () => {
+    if (!user || agentName.trim() === "") return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id,agent_name: agentName })
+      .eq("id", user.id);
+
+    if (!error) {
+      setAgentNameSaved(true);
+    } else {
+      console.error("Failed to save agent name:", error.message);
+    }
+  };
+
+  const API_BASE = "http://172.174.243.254:8000"; // Adjust this to your API URL
 
   // Fetch user documents
   const fetchDocuments = async () => {
@@ -209,6 +253,7 @@ const AgenticDocumentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
+<<<<<<< HEAD
       {/* <div className="bg-white shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -235,6 +280,9 @@ const AgenticDocumentDashboard = () => {
       {/*    </div>
         </div>
       </div> */}
+=======
+     
+>>>>>>> 13ec699286ac80eb07d4530d5520a9d6af46d9c0
 
       {/* Stats Cards */}
       {/* <div className="max-w-7xl mx-auto px-6 py-8"> */}
@@ -471,6 +519,7 @@ const AgenticDocumentDashboard = () => {
             {/* Agent Sessions Tab */}
             {activeTab === "agent" && (
               <div className="space-y-6">
+<<<<<<< HEAD
                 <div>
                   <h3 className="text-lg font-medium text-primary mb-4">
                     Agent Sessions
@@ -536,6 +585,40 @@ const AgenticDocumentDashboard = () => {
                   )}
                 </div>
               </div>
+=======
+      <div>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">
+          Agent Sessions
+        </h3>
+        <div className="bg-gray-50 rounded-xl p-6">
+          <h4 className="font-medium text-gray-900 mb-4">Create Agent</h4>
+
+          <div className="flex space-x-4 items-center">
+            <input
+              type="text"
+              value={agentName}
+              onChange={(e) => setAgentName(e.target.value)}
+              placeholder="Enter agent name..."
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={agentNameSaved}
+            />
+
+            <button
+              onClick={saveAgentName}
+              disabled={agentNameSaved || loading || !agentName.trim()}
+              className={`px-6 py-3 rounded-xl flex items-center transition-colors ${
+                agentNameSaved
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-black text-white hover:bg-green-700"
+              }`}
+            >
+              {agentNameSaved ? "Agent Created" : "Save Agent Name"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+>>>>>>> 13ec699286ac80eb07d4530d5520a9d6af46d9c0
             )}
           </div>
         </div>

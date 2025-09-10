@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Get user data from request body
     const body = await request.json()
-    const { userId, email, name } = body
+    const { userId, email, name, companyName, agentName  } = body
 
     if (!userId) {
       return new NextResponse('User ID is required', { status: 400 })
@@ -44,6 +44,8 @@ export async function POST(request: NextRequest) {
       userId,
       email,
       name: participantName,
+      companyName: companyName,
+      agentName: agentName,
       createdAt: new Date().toISOString(),
       sessionType: 'voice_assistant'
     }
@@ -91,6 +93,8 @@ export async function POST(request: NextRequest) {
       metadata: JSON.stringify({
         userId,
         email,
+        companyName: companyName,
+        agentName: agentName,
         joinedBy: participantIdentity,
         dispatchedAt: new Date().toISOString(),
       }),
@@ -104,7 +108,7 @@ export async function POST(request: NextRequest) {
       participantIdentity
     }
 
-    console.log('Generated token for user:', { userId, email, roomName, participantName })
+    console.log('Generated token for user:', { userId, email, companyName,agentName, roomName, participantName })
 
     return NextResponse.json(data, {
       headers: { 
