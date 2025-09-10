@@ -547,7 +547,7 @@ export function CallLogsTable({
     <div className="w-full space-y-4">
       {/* Header with search and filters */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-900">
+        <h2 className="text-2xl font-semibold text-primary">
           Recent Call Logs
         </h2>
         <div className="flex items-center gap-2">

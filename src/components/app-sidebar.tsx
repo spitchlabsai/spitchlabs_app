@@ -52,8 +52,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">SpitchLabs.</span>
+                {/* <IconInnerShadowTop className="!size-5" /> */}
+                <span className="text-base font-semibold text-primary">
+                  SpitchLabs.
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
