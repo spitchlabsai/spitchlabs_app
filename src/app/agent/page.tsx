@@ -520,7 +520,7 @@ const AgenticDocumentDashboard = () => {
             {activeTab === "agent" && (
               <div className="space-y-6">
 <<<<<<< HEAD
-                <div>
+{/*                 <div>
                   <h3 className="text-lg font-medium text-primary mb-4">
                     Agent Sessions
                   </h3>
@@ -584,7 +584,7 @@ const AgenticDocumentDashboard = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </div> */}
 =======
       <div>
         <h3 className="text-lg font-medium text-gray-900 mb-4">
