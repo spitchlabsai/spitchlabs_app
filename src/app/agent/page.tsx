@@ -613,7 +613,6 @@ const AgenticDocumentDashboard = () => {
         </div>
       </div>
     </div>
->>>>>>> 13ec699286ac80eb07d4530d5520a9d6af46d9c0
             )}
           </div>
         </div>
