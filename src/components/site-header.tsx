@@ -24,7 +24,7 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-4 data-[orientation=vertical]:h-16"
         />
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-primary">
           {pageTitle} - SpitchLabs
         </h1>
 
