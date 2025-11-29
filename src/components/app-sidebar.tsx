@@ -33,11 +33,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
+import Link from "next/link";
 
 const navigation = [
   { title: "Dashboard", url: "/" },
-  { title: "Agent Sessions", url: "/agent" },
-  { title: "Agent", url: "/caller" },
+  { title: "Campaign", url: "/campaign" },
+  { title: "Knowledge Base", url: "/knowledge" },
+  // { title: "Agent Sessions", url: "/agent" },
+  // { title: "Agent", url: "/caller" },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -49,23 +53,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-5"
+              className="data-[slot=sidebar-menu-button]:!px-4 data-[slot=sidebar-menu-button]:!py-4"
             >
-              <a href="#">
-                {/* <IconInnerShadowTop className="!size-5" /> */}
-                <span className="text-base font-semibold text-primary">
-                  SpitchLabs.
-                </span>
-              </a>
+              <Link href="/" className="flex items-center">
+                <div className="relative w-[280px] max-w-full h-20">
+                  <Image
+                    src="/sp2.png"
+                    alt="SpitchLabs logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={navigation} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={user as any} />
       </SidebarFooter>
     </Sidebar>
   );
