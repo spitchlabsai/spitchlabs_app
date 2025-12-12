@@ -396,11 +396,12 @@
 
 "use client";
 
-import { useState } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { FormEvent, useMemo, useState } from "react";
 import { Github, Loader2 } from "lucide-react";
 
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -412,122 +413,175 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+type Mode = "login" | "signup";
+
+interface LoginFormProps extends React.ComponentProps<"div"> {}
+
+export function LoginForm({ className, ...props }: LoginFormProps) {
   const supabase = createSupabaseBrowserClient();
 
-  const [loadingProvider, setLoadingProvider] = useState<
-    "google" | "github" | null
-  >(null);
-  const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup">("login"); // switch between modes
+  const [mode, setMode] = useState<Mode>("login");
   const [displayName, setDisplayName] = useState("");
-  const [companyName, setCompanyName] = useState(""); // ✅ new state
+  const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loadingProvider, setLoadingProvider] = useState<"google" | "github" | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // centralize redirect target
+  const redirectTo = useMemo(
+    () =>
+      typeof window !== "undefined"
+        ? `${window.location.origin}/auth/callback`
+        : undefined,
+    []
+  );
+
+  const resetMessages = () => {
+    setError(null);
+    setSuccessMessage(null);
+  };
+
+  const validateForm = () => {
+    if (!email.trim() || !password.trim()) {
+      return "Email and password are required.";
+    }
+
+    if (mode === "signup") {
+      if (!companyName.trim()) return "Company name is required.";
+      if (!displayName.trim()) return "Username is required.";
+      if (password.length < 8) {
+        return "Password must be at least 8 characters.";
+      }
+      if (password !== confirmPassword) {
+        return "Passwords do not match.";
+      }
+    }
+
+    return null;
+  };
 
   const handleOAuthLogin = async (provider: "google" | "github") => {
+    resetMessages();
+    setLoadingProvider(provider);
+
     try {
-      setLoadingProvider(provider);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: {
-          redirectTo:
-            typeof window !== "undefined"
-              ? `${window.location.origin}/auth/callback`
-              : undefined,
-        },
+        options: { redirectTo },
       });
 
-      if (error) console.error("OAuth login error:", error.message);
+      if (error) {
+        console.error("OAuth login error:", error.message);
+        setError(error.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong with social sign-in.");
     } finally {
       setLoadingProvider(null);
     }
   };
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccessMessage("");
+    resetMessages();
 
-    let error;
-
-    if (mode === "login") {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      error = signInError;
-    } else {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { 
-            displayName, 
-            companyName, // ✅ store in user_metadata
-          },
-        },
-      });
-      error = signUpError;
-    }
-
-    if (error) {
-      setError(error.message);
-    } else {
-      if (mode === "signup") {
-        setSuccessMessage(
-          "Account created! Please check your email to verify your account."
-        );
-      } else {
-        setSuccessMessage("Logged in successfully!");
-      }
-    }
-
-    setLoading(false);
-  };
-
-  const handlePasswordReset = async () => {
-    setError("");
-    setSuccessMessage("");
-
-    if (!email) {
-      setError("Please enter your email to reset password.");
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo:
-        typeof window !== "undefined"
-          ? `${window.location.origin}/auth/callback`
-          : undefined,
-    });
+    setLoading(true);
 
-    if (error) {
-      setError(error.message);
-    } else {
-      setSuccessMessage("Password reset link sent! Check your email.");
+    try {
+      if (mode === "login") {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError) {
+          setError(signInError.message);
+          return;
+        }
+
+        setSuccessMessage("Logged in successfully.");
+      } else {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              displayName,
+              companyName,
+            },
+            emailRedirectTo: redirectTo,
+          },
+        });
+
+        if (signUpError) {
+          setError(signUpError.message);
+          return;
+        }
+
+        setSuccessMessage(
+          "Account created. Check your inbox to verify your email."
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handlePasswordReset = async () => {
+    resetMessages();
+
+    if (!email.trim()) {
+      setError("Enter your email first to reset your password.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      setSuccessMessage("Password reset link sent. Check your email.");
+    } catch (err) {
+      console.error(err);
+      setError("Could not send reset email. Try again.");
+    }
+  };
+
+  const isBusy = loading || !!loadingProvider;
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">
-            {mode === "login" ? "Welcome back" : "Create an account"}
+            {mode === "login" ? "Welcome back" : "Create your SpitchLabs account"}
           </CardTitle>
           <CardDescription>
             {mode === "login"
-              ? "Login with your GitHub, Google, or email"
-              : "Sign up with your email to get started"}
+              ? "Sign in to manage your AI sales agents."
+              : "Sign up to start automating your sales calls."}
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <div className="grid gap-6">
             {/* OAuth Buttons */}
@@ -536,7 +590,8 @@ export function LoginForm({
                 variant="outline"
                 className="w-full"
                 onClick={() => handleOAuthLogin("google")}
-                disabled={loadingProvider === "google"}
+                disabled={loadingProvider === "google" || isBusy}
+                type="button"
               >
                 {loadingProvider === "google" ? (
                   <Loader2 className="mr-2 size-4 animate-spin" />
@@ -545,6 +600,7 @@ export function LoginForm({
                     className="mr-2 size-4"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
@@ -552,21 +608,22 @@ export function LoginForm({
                     />
                   </svg>
                 )}
-                {mode === "login" ? "Login with Google" : "Sign up with Google"}
+                {mode === "login" ? "Continue with Google" : "Sign up with Google"}
               </Button>
 
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={() => handleOAuthLogin("github")}
-                disabled={loadingProvider === "github"}
+                disabled={loadingProvider === "github" || isBusy}
+                type="button"
               >
                 {loadingProvider === "github" ? (
                   <Loader2 className="mr-2 size-4 animate-spin" />
                 ) : (
                   <Github className="mr-2 size-4" />
                 )}
-                {mode === "login" ? "Login with GitHub" : "Sign up with GitHub"}
+                {mode === "login" ? "Continue with GitHub" : "Sign up with GitHub"}
               </Button>
             </div>
 
@@ -578,29 +635,28 @@ export function LoginForm({
             </div>
 
             {/* Email/password form */}
-            <form onSubmit={handleAuth} className="grid gap-6">
+            <form onSubmit={handleAuth} className="grid gap-6" noValidate>
               {mode === "signup" && (
                 <>
                   <div className="grid gap-3">
-                    <Label htmlFor="companyName">Company Name</Label>
+                    <Label htmlFor="companyName">Company name</Label>
                     <Input
                       id="companyName"
                       type="text"
                       placeholder="Acme Corp"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      required
                     />
                   </div>
+
                   <div className="grid gap-3">
                     <Label htmlFor="displayName">Username</Label>
                     <Input
                       id="displayName"
                       type="text"
-                      placeholder="John Doe"
+                      placeholder="Jane Doe"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      required
                     />
                   </div>
                 </>
@@ -611,12 +667,14 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  autoComplete="email"
+                  placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
+
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
@@ -630,23 +688,37 @@ export function LoginForm({
                     </button>
                   )}
                 </div>
+
                 <Input
                   id="password"
                   type="password"
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
 
-              {error && <p className="text-sm text-red-500 -mt-4">{error}</p>}
-              {successMessage && (
-                <p className="text-sm text-green-600 -mt-4">
-                  {successMessage}
-                </p>
+              {mode === "signup" && (
+                <div className="grid gap-3">
+                  <Label htmlFor="confirmPassword">Confirm password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              {error && <p className="text-sm text-red-500 -mt-2">{error}</p>}
+              {successMessage && (
+                <p className="text-sm text-green-600 -mt-2">{successMessage}</p>
+              )}
+
+              <Button type="submit" className="w-full" disabled={isBusy}>
                 {loading
                   ? mode === "login"
                     ? "Logging in..."
@@ -667,8 +739,7 @@ export function LoginForm({
                     className="underline underline-offset-4"
                     onClick={() => {
                       setMode("signup");
-                      setError("");
-                      setSuccessMessage("");
+                      resetMessages();
                     }}
                   >
                     Sign up
@@ -682,8 +753,7 @@ export function LoginForm({
                     className="underline underline-offset-4"
                     onClick={() => {
                       setMode("login");
-                      setError("");
-                      setSuccessMessage("");
+                      resetMessages();
                     }}
                   >
                     Login
@@ -695,11 +765,17 @@ export function LoginForm({
         </CardContent>
       </Card>
 
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By continuing, you agree to our <a href="#">Terms of Service</a> and{" "}
-        <a href="#">Privacy Policy</a>.
+      <div className="text-muted-foreground text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
+        By continuing, you agree to our{" "}
+        <a href="/terms" target="_blank" rel="noreferrer">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="/privacy" target="_blank" rel="noreferrer">
+          Privacy Policy
+        </a>
+        .
       </div>
     </div>
   );
 }
-
