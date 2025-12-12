@@ -265,7 +265,7 @@ const AgenticDocumentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <main className="mx-auto max-w-6xl px-4 py-8 md:px-6">
+      <main className="mx-auto max-w-[1360px] px-4 py-8 md:px-6">
         {/* Top header */}
         <header className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>

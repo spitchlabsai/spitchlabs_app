@@ -34,6 +34,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import { Upload } from "lucide-react";
 
 type CampaignStatus = "Active" | "Inactive";
@@ -87,6 +88,7 @@ const CampaignPage: React.FC = () => {
 
   const [addOpen, setAddOpen] = React.useState(false);
   const [viewOpen, setViewOpen] = React.useState(false);
+  const [integrationsOpen, setIntegrationsOpen] = React.useState(false);
   const [selectedCampaign, setSelectedCampaign] =
     React.useState<Campaign | null>(null);
 
@@ -513,6 +515,14 @@ const CampaignPage: React.FC = () => {
                 Cancel
               </Button>
               <Button
+                onClick={() => setIntegrationsOpen(true)}
+                variant="outlined"
+                startIcon={<IntegrationInstructionsIcon />}
+                sx={{ textTransform: "none", borderRadius: 999 }}
+              >
+                Integrations
+              </Button>
+              <Button
                 type="submit"
                 variant="contained"
                 disabled={!newName || !newPurpose || !newFile}
@@ -641,6 +651,90 @@ const CampaignPage: React.FC = () => {
             sx={{ textTransform: "none" }}
           >
             Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Integrations helper modal */}
+      <Dialog
+        open={integrationsOpen}
+        onClose={() => setIntegrationsOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            p: { xs: 1.5, sm: 2 },
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <IntegrationInstructionsIcon color="primary" />
+            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+              Connect integrations
+            </Typography>
+          </Stack>
+          <Typography variant="body2" sx={{ mt: 0.5 }} color="text.secondary">
+            Sync campaign outcomes to your CRM, Slack, calendar, or webhook
+            endpoints. Wire these now or right after creating the campaign.
+          </Typography>
+        </DialogTitle>
+        <Divider />
+        <DialogContent sx={{ pt: 2 }}>
+          <Stack spacing={1.5}>
+            {[
+              { name: "Salesforce", detail: "Push notes & call outcomes" },
+              { name: "HubSpot", detail: "Update contacts and deals" },
+              { name: "Slack", detail: "Send call summaries to channels" },
+              {
+                name: "Google Calendar",
+                detail: "Auto-book follow-ups directly on rep calendars",
+              },
+              {
+                name: "Calendly",
+                detail: "Drop booking links or schedule meetings post-call",
+              },
+              { name: "Webhook", detail: "POST JSON payloads to your URL" },
+            ].map((integration) => (
+              <Box
+                key={integration.name}
+                sx={{
+                  border: "1px solid rgba(148, 163, 184, 0.4)",
+                  borderRadius: 2,
+                  p: 1.25,
+                  bgcolor: "rgba(248,250,252,0.8)",
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {integration.name}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {integration.detail}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 2 }}>
+          <Button
+            onClick={() => setIntegrationsOpen(false)}
+            sx={{ textTransform: "none" }}
+          >
+            Close
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              textTransform: "none",
+              borderRadius: 999,
+              px: 3,
+              bgcolor: "#7C3AED",
+              "&:hover": { bgcolor: "#6D28D9" },
+            }}
+            onClick={() => setIntegrationsOpen(false)}
+          >
+            Save & continue
           </Button>
         </DialogActions>
       </Dialog>
