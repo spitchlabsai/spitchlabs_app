@@ -35,6 +35,7 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
+import BlockIcon from "@mui/icons-material/Block";
 import { Upload } from "lucide-react";
 
 type CampaignStatus = "Active" | "Inactive";
@@ -144,6 +145,14 @@ const CampaignPage: React.FC = () => {
   const handleDelete = (campaign: Campaign) => {
     // no-op for now, but keep UI behaviour
     console.log("Delete clicked for", campaign.name);
+  };
+
+  const handleDeactivate = (campaign: Campaign) => {
+    setCampaigns((prev) =>
+      prev.map((item) =>
+        item.id === campaign.id ? { ...item, status: "Inactive" } : item
+      )
+    );
   };
 
   return (
@@ -378,6 +387,15 @@ const CampaignPage: React.FC = () => {
                           sx={{ mr: 1 }}
                         >
                           <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="warning"
+                          onClick={() => handleDeactivate(campaign)}
+                          disabled={campaign.status === "Inactive"}
+                          sx={{ mr: 1 }}
+                        >
+                          <BlockIcon fontSize="small" />
                         </IconButton>
                         <IconButton
                           size="small"

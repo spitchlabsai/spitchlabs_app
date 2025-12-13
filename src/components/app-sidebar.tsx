@@ -40,7 +40,7 @@ const navigation = [
   { title: "Dashboard", url: "/" },
   { title: "Campaign", url: "/campaign" },
   { title: "Knowledge Base", url: "/knowledge" },
-  { title: "Agent Sessions", url: "/agent" },
+  // { title: "Agent Sessions", url: "/agent" },
   { title: "Agent", url: "/caller" },
 ];
 
@@ -53,15 +53,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!px-4 data-[slot=sidebar-menu-button]:!py-4"
+              className="data-[slot=sidebar-menu-button]:!px-4 data-[slot=sidebar-menu-button]:!py-4 data-[slot=sidebar-menu-button]:!justify-start"
             >
-              <Link href="/" className="flex items-center">
-                <div className="relative w-[280px] max-w-full h-20">
+              <Link href="/" className="">
+                <div className="relative h-16 w-[260px] max-w-full -ml-6">
                   <Image
                     src="/sp2.png"
                     alt="SpitchLabs logo"
                     fill
-                    className="object-contain"
+                    className="object-contain object-left"
                     priority
                   />
                 </div>
