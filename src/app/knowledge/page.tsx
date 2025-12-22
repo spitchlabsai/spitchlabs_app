@@ -347,7 +347,7 @@ const KnowledgeBasePage: React.FC = () => {
           </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <section className="grid gap-6 ">
           <div className="space-y-6">
             <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50/80 p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -517,8 +517,8 @@ const KnowledgeBasePage: React.FC = () => {
             </div> */}
           </div>
 
-          <aside className="space-y-6">
-            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+          {/* <aside className="space-y-6"> */}
+            {/* <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-slate-900 via-indigo-600 to-slate-900/80" />
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -575,7 +575,7 @@ const KnowledgeBasePage: React.FC = () => {
                   ))}
                 </div>
               )}
-            </div>
+            </div> */}
 
             {/* <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <h3 className="mb-3 text-sm font-semibold text-slate-900">
@@ -675,7 +675,7 @@ const KnowledgeBasePage: React.FC = () => {
                 </div>
               </div>
             </div> */}
-          </aside>
+          {/* </aside> */}
         </section>
       </main>
     </div>

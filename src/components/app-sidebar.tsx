@@ -38,7 +38,7 @@ import Link from "next/link";
 
 const navigation = [
   { title: "Dashboard", url: "/" },
-  { title: "Campaign", url: "/campaign" },
+  { title: "Campaigns", url: "/campaign" },
   { title: "Knowledge Base", url: "/knowledge" },
   // { title: "Agent Sessions", url: "/agent" },
   { title: "Agent", url: "/caller" },
