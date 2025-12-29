@@ -214,9 +214,9 @@ const CampaignPage: React.FC = () => {
               py: 1.2,
               boxShadow:
                 "0 10px 30px rgba(15,23,42,0.15), 0 0 0 1px rgba(15,23,42,0.02)",
-              bgcolor: "#7C3AED", // custom purple
+              bgcolor: "#06b6d4", // custom cyan
               "&:hover": {
-                bgcolor: "#6D28D9", // darker purple on hover
+                bgcolor: "#0ea5e9", // darker cyan on hover
               },
             }}
           >
@@ -548,9 +548,9 @@ const CampaignPage: React.FC = () => {
                   textTransform: "none",
                   borderRadius: 999,
                   px: 3,
-                  bgcolor: "#7C3AED", // custom purple
+                  bgcolor: "#06b6d4", // custom cyan
                   "&:hover": {
-                    bgcolor: "#6D28D9", // darker purple on hover
+                    bgcolor: "#0ea5e9", // darker cyan on hover
                   },
                 }}
               >
@@ -747,8 +747,8 @@ const CampaignPage: React.FC = () => {
               textTransform: "none",
               borderRadius: 999,
               px: 3,
-              bgcolor: "#7C3AED",
-              "&:hover": { bgcolor: "#6D28D9" },
+              bgcolor: "#06b6d4",
+              "&:hover": { bgcolor: "#0ea5e9" },
             }}
             onClick={() => setIntegrationsOpen(false)}
           >

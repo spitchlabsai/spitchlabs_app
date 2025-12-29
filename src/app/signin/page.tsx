@@ -42,10 +42,10 @@
 //   }, []);
 
 //   return (
-//     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+//     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900">
 //       {/* Animated background elements */}
 //       <div className="absolute inset-0 opacity-20">
-//         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+//         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
 //         <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
 //         <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
 //       </div>
@@ -73,7 +73,7 @@
 
 //             {/* Header */}
 //             <div className="relative z-10 text-center mb-8">
-//               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl mb-6 shadow-lg">
+//               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500 to-sky-500 rounded-2xl mb-6 shadow-lg">
 //                 <svg
 //                   className="w-8 h-8 text-white"
 //                   fill="none"
@@ -100,27 +100,27 @@
 //             <div className="relative z-10">
 //               <style jsx global>{`
 //                 .supabase-auth-ui_ui {
-//                   --brand-color: rgb(147 51 234);
-//                   --brand-accent: rgb(79 70 229);
+//                   --brand-color: rgb(6 182 212);
+//                   --brand-accent: rgb(14 165 233);
 //                 }
 
 //                 .supabase-auth-ui_ui button[type="submit"] {
 //                   background: linear-gradient(
 //                     135deg,
-//                     rgb(147 51 234) 0%,
-//                     rgb(79 70 229) 100%
+//                     rgb(6 182 212) 0%,
+//                     rgb(14 165 233) 100%
 //                   ) !important;
 //                   border: none !important;
 //                   border-radius: 12px !important;
 //                   font-weight: 600 !important;
 //                   padding: 12px 24px !important;
 //                   transition: all 0.3s ease !important;
-//                   box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4) !important;
+//                   box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4) !important;
 //                 }
 
 //                 .supabase-auth-ui_ui button[type="submit"]:hover {
 //                   transform: translateY(-2px) !important;
-//                   box-shadow: 0 8px 25px rgba(147, 51, 234, 0.6) !important;
+//                   box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6) !important;
 //                 }
 
 //                 .supabase-auth-ui_ui .supabase-auth-ui_ui-button {
@@ -151,8 +151,8 @@
 //                 }
 
 //                 .supabase-auth-ui_ui input:focus {
-//                   border-color: rgb(147 51 234) !important;
-//                   box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1) !important;
+//                   border-color: rgb(6 182 212) !important;
+//                   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1) !important;
 //                   outline: none !important;
 //                 }
 
@@ -167,14 +167,14 @@
 //                 }
 
 //                 .supabase-auth-ui_ui a {
-//                   color: rgb(147 51 234) !important;
+//                   color: rgb(6 182 212) !important;
 //                   text-decoration: none !important;
 //                   font-weight: 500 !important;
 //                   transition: all 0.3s ease !important;
 //                 }
 
 //                 .supabase-auth-ui_ui a:hover {
-//                   color: rgb(168 85 247) !important;
+//                   color: rgb(14 165 233) !important;
 //                 }
 
 //                 .supabase-auth-ui_ui .supabase-auth-ui_ui-divider {
@@ -210,7 +210,7 @@
 //                   theme: ThemeSupa,
 //                   style: {
 //                     button: { borderRadius: "12px" },
-//                     anchor: { color: "rgb(147 51 234)" },
+//                     anchor: { color: "rgb(6 182 212)" },
 //                   },
 //                 }}
 //                 providers={["google", "github"]}
@@ -228,7 +228,7 @@
 //                 New to our platform?{" "}
 //                 <a
 //                   href="/signup"
-//                   className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+//                   className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
 //                 >
 //                   Create an account
 //                 </a>
@@ -237,13 +237,13 @@
 //           </div>
 
 //           {/* Floating elements */}
-//           <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
+//           <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-cyan-500 to-sky-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
 //           <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full blur-xl opacity-20 animate-pulse delay-1000"></div>
 //         </div>
 //       </div>
 
 //       {/* Bottom decoration */}
-//       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50"></div>
+//       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50"></div>
 //     </div>
 //   );
 // }
