@@ -37,7 +37,7 @@ export function SiteHeader() {
             <p className="text-sm font-medium text-gray-900">{user?.email}</p>
             <p className="text-xs text-gray-500">Authenticated User</p>
           </div>
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
             <span className="text-white font-medium">
               {user?.email[0].toUpperCase() ?? 'User'}
             </span>

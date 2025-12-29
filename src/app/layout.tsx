@@ -21,6 +21,9 @@ const navigation = [
 export const metadata: Metadata = {
   title: "Spitchlabs dashboard",
   description: "spitchlabs dashboard",
+  icons: {
+    icon: "/favicon.jpg",
+  },
 };
 
 
