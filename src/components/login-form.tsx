@@ -718,7 +718,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 <p className="text-sm text-green-600 -mt-2">{successMessage}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={isBusy}>
+              <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-600" disabled={isBusy}>
                 {loading
                   ? mode === "login"
                     ? "Logging in..."
