@@ -160,9 +160,9 @@ function MetricCard({
 }
 
 export function SectionCards() {
-  const callsMadeOutbound = "3,542";
-  const callsReceivedInbound = "1,284";
-  const avgCallDuration = "2m 36s";
+  const callsMadeOutbound = "0";
+  const callsReceivedInbound = "0";
+  const avgCallDuration = "0";
 
   return (
     <section className="space-y-3 sm:space-y-4">
@@ -185,7 +185,7 @@ export function SectionCards() {
           label="Outbound Calls"
           value={callsMadeOutbound}
           helperText="Total outbound calls placed."
-          trendLabel="+8.2% increase"
+          trendLabel="+0% increase"
           trendDirection="up"
           icon={<IconPhoneOutgoing className="h-4 w-4" />}
           color="blue"
@@ -195,7 +195,7 @@ export function SectionCards() {
           label="Inbound Volume"
           value={callsReceivedInbound}
           helperText="Total inbound calls received."
-          trendLabel="-3.4% decrease"
+          trendLabel="0% decrease"
           trendDirection="down"
           icon={<IconPhoneIncoming className="h-4 w-4" />}
           color="violet"
@@ -205,7 +205,7 @@ export function SectionCards() {
           label="Avg Duration"
           value={avgCallDuration}
           helperText="Mean talk time per call."
-          trendLabel="+6.9% increase"
+          trendLabel="+0% increase"
           trendDirection="up"
           icon={<IconClockHour4 className="h-4 w-4" />}
           color="amber"

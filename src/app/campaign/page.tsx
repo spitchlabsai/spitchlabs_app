@@ -50,30 +50,7 @@ interface Campaign {
 }
 
 const initialCampaigns: Campaign[] = [
-  {
-    id: 1,
-    name: "Q1 Enterprise Outreach",
-    purpose: "Book demos with top 200 enterprise accounts",
-    fileName: "enterprise_q1_leads.xlsx",
-    status: "Active",
-    createdAt: "2025-11-15",
-  },
-  {
-    id: 2,
-    name: "Dormant Leads Reactivation",
-    purpose: "Re-engage leads inactive for 90+ days",
-    fileName: "dormant_leads.csv",
-    status: "Inactive",
-    createdAt: "2025-10-03",
-  },
-  {
-    id: 3,
-    name: "Product Launch Wave 1",
-    purpose: "Announce new product to EMEA region",
-    fileName: "launch_leads_emea.pdf",
-    status: "Active",
-    createdAt: "2025-09-20",
-  },
+  
 ];
 
 const CampaignPage: React.FC = () => {
