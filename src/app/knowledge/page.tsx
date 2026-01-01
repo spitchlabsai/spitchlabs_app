@@ -61,8 +61,11 @@ const KnowledgeBasePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [coldCallScript, setColdCallScript] = useState("");
+  const [isUpdatingScript, setIsUpdatingScript] = useState(false);
+  const [scriptUpdateStatus, setScriptUpdateStatus] = useState("");
 
-  const API_BASE = "https://apiend.spitchlabs.com";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -91,6 +94,7 @@ const KnowledgeBasePage: React.FC = () => {
     fetchDocuments();
     fetchKnowledgeBase();
     fetchActiveSessions();
+    fetchColdCallScript();
   }, [user?.id]);
 
   const fetchDocuments = async () => {
@@ -112,6 +116,17 @@ const KnowledgeBasePage: React.FC = () => {
       setKnowledgeBase(data);
     } catch (error) {
       console.error("Error fetching knowledge base:", error);
+    }
+  };
+
+  const fetchColdCallScript = async () => {
+    if (!user?.id) return;
+    try {
+      const response = await fetch(`${API_BASE}/get-script/${user.id}`);
+      const data = await response.json();
+      setColdCallScript(data.script || "");
+    } catch (error) {
+      console.error("Error fetching script:", error);
     }
   };
 
@@ -137,6 +152,32 @@ const KnowledgeBasePage: React.FC = () => {
       setAgentNameSaved(true);
     } else {
       console.error("Failed to save agent name:", error.message);
+    }
+  };
+
+  const handleUpdateScript = async () => {
+    if (!user?.id) return;
+    setIsUpdatingScript(true);
+    setScriptUpdateStatus("Updating...");
+    try {
+      const response = await fetch(`${API_BASE}/update-script/${user.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ script: coldCallScript }),
+      });
+      if (response.ok) {
+        setScriptUpdateStatus("Script updated successfully.");
+      } else {
+        const data = await response.json();
+        setScriptUpdateStatus(`Error: ${data.detail || "Failed to update"}`);
+      }
+    } catch (error) {
+      setScriptUpdateStatus(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
+    } finally {
+      setIsUpdatingScript(false);
+      setTimeout(() => setScriptUpdateStatus(""), 3000);
     }
   };
 
@@ -193,7 +234,8 @@ const KnowledgeBasePage: React.FC = () => {
       });
 
       const results = await response.json();
-      setSearchResults(Array.isArray(results) ? results : results?.results || []);
+      // Handle both array and object formats for robustness
+      setSearchResults(Array.isArray(results) ? results : (results?.results || []));
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -362,11 +404,10 @@ const KnowledgeBasePage: React.FC = () => {
                 </div>
                 <label
                   htmlFor="file-upload"
-                  className={`inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium shadow-sm transition ${
-                    isUploading
-                      ? "cursor-not-allowed bg-slate-300 text-slate-600"
-                      : "cursor-pointer bg-slate-900 text-white hover:bg-slate-800"
-                  }`}
+                  className={`inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium shadow-sm transition ${isUploading
+                    ? "cursor-not-allowed bg-slate-300 text-slate-600"
+                    : "cursor-pointer bg-slate-900 text-white hover:bg-slate-800"
+                    }`}
                 >
                   {isUploading ? (
                     <Clock className="mr-2 h-4 w-4 animate-spin" />
@@ -386,11 +427,10 @@ const KnowledgeBasePage: React.FC = () => {
               </div>
               {uploadStatus && (
                 <div
-                  className={`mt-4 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium ${
-                    uploadStatus.includes("Error")
-                      ? "bg-rose-50 text-rose-700"
-                      : "bg-emerald-50 text-emerald-700"
-                  }`}
+                  className={`mt-4 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium ${uploadStatus.includes("Error")
+                    ? "bg-rose-50 text-rose-700"
+                    : "bg-emerald-50 text-emerald-700"
+                    }`}
                 >
                   {uploadStatus.includes("Error") ? (
                     <AlertCircle className="mr-1.5 h-3.5 w-3.5" />
@@ -458,6 +498,54 @@ const KnowledgeBasePage: React.FC = () => {
               )}
             </div>
 
+            <div className="space-y-4 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+              <div className="flex flex-col gap-2">
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Cold Call Script
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Manage the script your agent follows during cold calls.
+                </p>
+                <textarea
+                  value={coldCallScript}
+                  onChange={(e) => setColdCallScript(e.target.value)}
+                  placeholder="Enter the sales script for your agent..."
+                  className="min-h-[200px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none ring-0 transition focus:bg-white focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    {scriptUpdateStatus && (
+                      <div
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${scriptUpdateStatus.includes("Error")
+                            ? "bg-rose-50 text-rose-700"
+                            : "bg-emerald-50 text-emerald-700"
+                          }`}
+                      >
+                        {scriptUpdateStatus.includes("Error") ? (
+                          <AlertCircle className="mr-1.5 h-3.5 w-3.5" />
+                        ) : (
+                          <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                        )}
+                        {scriptUpdateStatus}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleUpdateScript}
+                    disabled={isUpdatingScript}
+                    className="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                  >
+                    {isUpdatingScript ? (
+                      <Clock className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                    )}
+                    {isUpdatingScript ? "Updating..." : "Update Script"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* <div className="space-y-4 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -518,7 +606,7 @@ const KnowledgeBasePage: React.FC = () => {
           </div>
 
           {/* <aside className="space-y-6"> */}
-            {/* <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+          {/* <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-slate-900 via-indigo-600 to-slate-900/80" />
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -577,7 +665,7 @@ const KnowledgeBasePage: React.FC = () => {
               )}
             </div> */}
 
-            {/* <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+          {/* <div className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <h3 className="mb-3 text-sm font-semibold text-slate-900">
                 Agent identity
               </h3>
@@ -607,7 +695,7 @@ const KnowledgeBasePage: React.FC = () => {
               </div>
             </div> */}
 
-            {/* <div className="space-y-4 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
+          {/* <div className="space-y-4 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-slate-900">
                   Active sessions

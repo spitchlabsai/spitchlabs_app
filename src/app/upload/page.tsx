@@ -38,7 +38,7 @@ export default function UploadPage() {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<string | null>(null);
-  
+
   const supabase = createClientComponentClient();
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -77,7 +77,7 @@ export default function UploadPage() {
     // Validate file type
     const allowedTypes = ['.pdf', '.docx', '.doc'];
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-    
+
     if (!allowedTypes.includes(fileExtension)) {
       setUploadStatus('Invalid file type. Please upload PDF or Word documents only.');
       return;
@@ -191,12 +191,11 @@ export default function UploadPage() {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Upload Document</h2>
-              
+
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                  isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
-                }`}
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+                  }`}
               >
                 <input {...getInputProps()} />
                 <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -218,9 +217,8 @@ export default function UploadPage() {
               )}
 
               {uploadStatus && (
-                <div className={`mt-4 p-3 rounded-md ${
-                  uploadStatus.includes('successful') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-                }`}>
+                <div className={`mt-4 p-3 rounded-md ${uploadStatus.includes('successful') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                  }`}>
                   {uploadStatus}
                 </div>
               )}
@@ -248,7 +246,7 @@ export default function UploadPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Search Documents</h2>
-              
+
               <div className="flex gap-2 mb-6">
                 <input
                   type="text"
