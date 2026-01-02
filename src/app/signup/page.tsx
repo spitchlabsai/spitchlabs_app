@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LoginForm } from "@/components/login-form";
+import { SignupForm } from "@/components/signup-form";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -14,12 +14,12 @@ export default function LoginPage() {
           <Image src="/sp2.png" width={200} height={40} alt="SpitchLabs logo" />
         </Link>
 
-        <LoginForm />
+        <SignupForm />
 
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-medium text-cyan-600 underline-offset-4 hover:underline">
-            Sign up
+          Already have an account?{" "}
+          <Link href="/signin" className="font-medium text-cyan-600 underline-offset-4 hover:underline">
+            Login
           </Link>
         </p>
       </div>

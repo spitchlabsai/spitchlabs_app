@@ -32,6 +32,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,29 +48,38 @@ const navigation = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useUser();
+  const { open } = useSidebar();
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!px-4 data-[slot=sidebar-menu-button]:!py-4 data-[slot=sidebar-menu-button]:!justify-start"
-            >
-              <Link href="/" className="">
-                <div className="relative h-16 w-[260px] max-w-full -ml-6">
-                  <Image
-                    src="/sp2.png"
-                    alt="SpitchLabs logo"
-                    fill
-                    className="object-contain object-left"
-                    priority
-                  />
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center justify-between gap-2">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:!px-4 data-[slot=sidebar-menu-button]:!py-4 data-[slot=sidebar-menu-button]:!justify-start"
+              >
+                <Link href="/" className="">
+                  <div className="relative h-16 w-[260px] max-w-full -ml-6">
+                    <Image
+                      src="/sp2.png"
+                      alt="SpitchLabs logo"
+                      fill
+                      className="object-contain object-left"
+                      priority
+                    />
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          {open && (
+            <SidebarTrigger
+              className="text-muted-foreground hover:text-primary"
+              aria-label="Close sidebar"
+            />
+          )}
+        </div>
       </SidebarHeader>
 
       <SidebarContent>

@@ -1,22 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { UserProvider } from "./userProvider";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { NavMain } from "@/components/nav-main";
-import { SiteHeader } from "@/components/site-header";
-
-const navigation = [
-  { title: "Dashboard", url: "/" },
-  { title: "Agent Sessions", url: "/agent" },
-  { title: "Users", url: "/users" },
-  { title: "Settings", url: "/settings" },
-  { title: "Upload Leads", url: "/upload" },
-];
-
 
 export const metadata: Metadata = {
   title: "Spitchlabs dashboard",
@@ -25,7 +11,6 @@ export const metadata: Metadata = {
     icon: "/favicon.png",
   },
 };
-
 
 export default async function RootLayout({
   children,
@@ -39,25 +24,14 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       <body>
         <Providers>
-          <UserProvider user={user}>
-            {user ? (
-              <SidebarProvider>
-                <AppSidebar>
-                  <NavMain items={navigation} />
-                </AppSidebar>
-                <SidebarInset>
-                  <SiteHeader />
-                  {children}
-                </SidebarInset>
-              </SidebarProvider>
-            ) : (
-              <div className="min-h-screen flex flex-col">
-                <main className="flex-1">{children}</main>
-              </div>
-            )}
-          </UserProvider>
+          <UserProvider user={user}>{children}</UserProvider>
         </Providers>
       </body>
     </html>

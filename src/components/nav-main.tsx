@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import {
   SidebarGroup,
@@ -17,6 +18,15 @@ export function NavMain({
   items: { title: string; url: string }[];
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    items.forEach((item) => {
+      if (item.url !== pathname) {
+        router.prefetch(item.url);
+      }
+    });
+  }, [items, pathname, router]);
 
   return (
     <SidebarGroup>

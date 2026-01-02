@@ -74,6 +74,7 @@ const CampaignPage: React.FC = () => {
   const [newName, setNewName] = React.useState("");
   const [newPurpose, setNewPurpose] = React.useState("");
   const [newFile, setNewFile] = React.useState<File | null>(null);
+  const [scriptFile, setScriptFile] = React.useState<File | null>(null);
 
   const filteredCampaigns = campaigns.filter((c) => {
     const matchesSearch =
@@ -91,6 +92,12 @@ const CampaignPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     setNewFile(file);
+  };
+
+  const handleScriptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setScriptFile(file);
   };
 
   const handleSubmitNewCampaign = (e: React.FormEvent) => {
@@ -111,6 +118,7 @@ const CampaignPage: React.FC = () => {
     setNewName("");
     setNewPurpose("");
     setNewFile(null);
+    setScriptFile(null);
     setAddOpen(false);
   };
 
@@ -172,7 +180,7 @@ const CampaignPage: React.FC = () => {
             </Typography>
             <Typography
               variant="body2"
-              sx={{ mt: 0.5, color: "text.secondary", maxWidth: 460 }}
+              sx={{ mt: 0.5, ml: 0.3, color: "text.secondary", maxWidth: 460 }}
             >
               Create calling campaigns, attach lead lists, and keep track of
               everything in one place.
@@ -496,6 +504,54 @@ const CampaignPage: React.FC = () => {
                     hidden
                     accept=".pdf,.xlsx,.xls,.csv"
                     onChange={handleFileChange}
+                  />
+                </Button>
+              </Box>
+              
+              <Box>
+                <Typography
+                  variant="caption"
+                  sx={{ mb: 0.5, display: "block", color: "text.secondary" }}
+                >
+                  Call script (optional)
+                </Typography>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  sx={{
+                    borderStyle: "dashed",
+                    borderRadius: 2,
+                    textTransform: "none",
+                    justifyContent: "flex-start",
+                    px: 2,
+                    py: 1.2,
+                    width: "100%",
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1.5}
+                    sx={{ width: "100%" }}
+                  >
+                    <UploadIcon />
+                    <Box sx={{ flex: 1, textAlign: "left" }}>
+                      <Typography variant="body2">
+                        {scriptFile ? scriptFile.name : "Upload optional call script"}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        Accepts .pdf, .doc, .docx
+                      </Typography>
+                    </Box>
+                  </Stack>
+                  <input
+                    type="file"
+                    hidden
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleScriptChange}
                   />
                 </Button>
               </Box>
