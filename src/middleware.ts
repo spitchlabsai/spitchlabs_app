@@ -193,8 +193,9 @@ export default async function middleware(req: NextRequest) {
   const redirectedFrom = req.nextUrl.searchParams.get('redirectedFrom');
   
   // Protected routes
-  const protectedRoutes = ["/", "/caller", "/agent", "/admin"];
-  const isProtected = protectedRoutes.some((route) =>
+  const protectedRoutes = ["/caller", "/agent", "/admin"];
+  const isDashboard = pathname === "/";
+  const isProtected = isDashboard || protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
 

@@ -13,7 +13,7 @@ import {
   CheckCircle,
   Clock,
 } from "lucide-react";
-import { useUser } from "../userProvider";
+import { useUser } from "@/app/userProvider";
 
 const AgenticDocumentDashboard = () => {
   const [activeTab, setActiveTab] = useState<"documents" | "search" | "agent">(

@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { useUser } from "../userProvider";
+import { useUser } from "@/app/userProvider";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type DocumentRecord = {
@@ -282,19 +282,6 @@ const KnowledgeBasePage: React.FC = () => {
               on active agent sessions in one place.
             </p>
           </div>
-          {user && (
-            <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-white px-3 py-2 shadow-sm">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white">
-                {userInitial}
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-medium text-slate-900">
-                  {user.email}
-                </p>
-                <p className="text-xs text-slate-500">Signed in</p>
-              </div>
-            </div>
-          )}
         </header>
 
         <section className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
