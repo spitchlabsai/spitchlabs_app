@@ -30,14 +30,14 @@ export default function NotificationsPage() {
   return (
     <div className="relative flex flex-1 flex-col">
       <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">
+        <div className="space-y-3">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">
             Notifications
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold leading-snug tracking-tight">
             Activity center
           </h1>
-          <p className="max-w-2xl text-sm text-muted-foreground">
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
             This is where you will see everything that matters — alerts, automations, or updates about your call agents and credits.
           </p>
         </div>
