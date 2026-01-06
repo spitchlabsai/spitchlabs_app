@@ -44,6 +44,9 @@ const navigation = [
   { title: "Knowledge Base", url: "/knowledge" },
   // { title: "Agent Sessions", url: "/agent" },
   { title: "Agent", url: "/caller" },
+  // { title: "Account", url: "/account" },
+  // { title: "Billing", url: "/billing" },
+  // { title: "Notifications", url: "/notifications" },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
