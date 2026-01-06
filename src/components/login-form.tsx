@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -30,6 +30,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const redirectTo = useMemo(
     () =>
@@ -66,7 +67,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
         return;
       }
 
-      router.push("/");
+      setSuccessMessage("Login successful! Redirecting to the dashboard...");
+      redirectTimeoutRef.current = setTimeout(() => {
+        router.push("/");
+      }, 1200);
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
@@ -100,6 +104,14 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       setError("Could not send reset email. Try again.");
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

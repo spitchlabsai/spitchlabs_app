@@ -19,12 +19,14 @@ export default function BillingPage() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">
+        <div className="space-y-3">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">
             Billing
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight">Usage & credits</h1>
-          <p className="max-w-2xl text-sm text-muted-foreground">
+          <h1 className="text-3xl font-semibold leading-snug tracking-tight text-foreground">
+            Usage & credits
+          </h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
             Track how much AI power you are spending, see how many credits remain, and update payment information without leaving the dashboard.
           </p>
         </div>
