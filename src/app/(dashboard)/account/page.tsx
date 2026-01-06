@@ -83,7 +83,7 @@ export default function AccountPage() {
     }
 
     setStatus("success");
-    setMessage("Details saved. Check your inbox if you updated the email.");
+    setMessage("Details saved.");
   };
 
   return (
@@ -101,22 +101,25 @@ export default function AccountPage() {
           className="grid gap-5 rounded-2xl border border-border/80 bg-background/80 p-6 shadow-sm shadow-muted-foreground/10"
           onSubmit={handleSubmit}
         >
-          {fieldDefinitions.map((field) => (
-            <label key={field.name} className="flex flex-col gap-2 text-sm font-medium text-foreground">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                {field.label}
-              </span>
-              <Input
-                name={field.name}
-                type={field.type}
-                placeholder={field.placeholder}
-                value={form[field.name as keyof AccountFormState]}
-                onChange={handleChange(field.name as keyof AccountFormState)}
-                disabled={loading || status === "saving"}
-                className="bg-transparent"
-              />
-            </label>
-          ))}
+          {fieldDefinitions.map((field) => {
+            const fieldValue = form[field.name as keyof AccountFormState] ?? "";
+            return (
+              <label key={field.name} className="flex flex-col gap-2 text-sm font-medium text-foreground">
+                <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {field.label}
+                </span>
+                <Input
+                  name={field.name}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  value={fieldValue}
+                  onChange={handleChange(field.name as keyof AccountFormState)}
+                  disabled={loading || status === "saving"}
+                  className="bg-transparent"
+                />
+              </label>
+            );
+          })}
 
           <div className="flex flex-col gap-1 border-t border-border/60 pt-4">
             <div className="flex items-center justify-between">
