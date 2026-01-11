@@ -4,12 +4,18 @@ interface WelcomeProps {
   disabled: boolean;
   startButtonText: string;
   onStartCall: () => void;
+  campaigns: any[];
+  selectedCampaignId?: string;
+  onCampaignChange: (id: string) => void;
 }
 
 export const Welcome = ({
   disabled,
   startButtonText,
   onStartCall,
+  campaigns,
+  selectedCampaignId,
+  onCampaignChange,
   ref,
 }: React.ComponentProps<'div'> & WelcomeProps) => {
   return (
@@ -37,6 +43,23 @@ export const Welcome = ({
         <p className="text-fg1 max-w-prose pt-1 leading-6 font-medium">
           Chat live with your AI Sales agent
         </p>
+
+        {campaigns.length > 0 && (
+          <div className="mt-6 w-64 text-left">
+            <label className="text-xs font-semibold text-fg2 mb-1 block">SELECT CAMPAIGN</label>
+            <select
+              value={selectedCampaignId}
+              onChange={(e) => onCampaignChange(e.target.value)}
+              className="w-full bg-bg1 border border-border0 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              {campaigns.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <Button variant="primary" size="lg" onClick={onStartCall} className="mt-6 w-64 font-mono">
           {startButtonText}
         </Button>

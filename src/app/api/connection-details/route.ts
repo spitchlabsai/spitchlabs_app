@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { AccessToken, type VideoGrant, AgentDispatchClient, RoomServiceClient } from 'livekit-server-sdk'
-import { RoomAgentDispatch, RoomConfiguration } from '@livekit/protocol'; 
+import { RoomAgentDispatch, RoomConfiguration } from '@livekit/protocol';
 
 const API_KEY = process.env.LIVEKIT_API_KEY
 const API_SECRET = process.env.LIVEKIT_API_SECRET
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Get user data from request body
     const body = await request.json()
-    const { userId, email, name, companyName, agentName  } = body
+    const { userId, email, name, companyName, agentName, campaignId } = body
 
     if (!userId) {
       return new NextResponse('User ID is required', { status: 400 })
@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
     const participantName = name || email?.split('@')[0] || `User-${userId.substring(0, 8)}`
     const participantIdentity = userId
     const roomName = `voice_assistant_room_${name}`
-    
+
     // Create room service client for room management
     const roomService = new RoomServiceClient(LIVEKIT_URL, API_KEY, API_SECRET)
-    
+
     // Prepare user metadata to pass to both room and agent
     const userMetadata = {
       userId,
@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
       name: participantName,
       companyName: companyName,
       agentName: agentName,
+      campaignId: campaignId,
       createdAt: new Date().toISOString(),
       sessionType: 'voice_assistant'
     }
@@ -95,6 +96,7 @@ export async function POST(request: NextRequest) {
         email,
         companyName: companyName,
         agentName: agentName,
+        campaignId: campaignId,
         joinedBy: participantIdentity,
         dispatchedAt: new Date().toISOString(),
       }),
@@ -108,10 +110,10 @@ export async function POST(request: NextRequest) {
       participantIdentity
     }
 
-    console.log('Generated token for user:', { userId, email, companyName,agentName, roomName, participantName })
+    console.log('Generated token for user:', { userId, email, companyName, agentName, roomName, participantName })
 
     return NextResponse.json(data, {
-      headers: { 
+      headers: {
         'Cache-Control': 'no-store',
       },
     })

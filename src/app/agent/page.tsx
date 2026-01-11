@@ -359,11 +359,10 @@ const AgenticDocumentDashboard = () => {
                     onClick={() =>
                       setActiveTab(tab.id as typeof activeTab)
                     }
-                    className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs transition ${
-                      isActive
+                    className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs transition ${isActive
                         ? "bg-slate-900 text-white shadow-sm"
                         : "text-slate-600 hover:bg-white"
-                    }`}
+                      }`}
                   >
                     <tab.icon className="h-3.5 w-3.5" />
                     <span>{tab.label}</span>
@@ -398,11 +397,10 @@ const AgenticDocumentDashboard = () => {
 
                   <label
                     htmlFor="file-upload"
-                    className={`mt-4 inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium shadow-sm transition ${
-                      isUploading
+                    className={`mt-4 inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium shadow-sm transition ${isUploading
                         ? "cursor-not-allowed bg-slate-300 text-slate-600"
                         : "cursor-pointer bg-slate-900 text-white hover:bg-slate-800"
-                    }`}
+                      }`}
                   >
                     {isUploading ? (
                       <Clock className="mr-2 h-4 w-4 animate-spin" />
@@ -414,11 +412,10 @@ const AgenticDocumentDashboard = () => {
 
                   {uploadStatus && (
                     <div
-                      className={`mt-4 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium ${
-                        uploadStatus.includes("Error")
+                      className={`mt-4 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium ${uploadStatus.includes("Error")
                           ? "bg-rose-50 text-rose-700"
                           : "bg-emerald-50 text-emerald-700"
-                      }`}
+                        }`}
                     >
                       {uploadStatus.includes("Error") ? (
                         <AlertCircle className="mr-1.5 h-3.5 w-3.5" />
@@ -586,11 +583,10 @@ const AgenticDocumentDashboard = () => {
                           loading ||
                           !agentName.trim()
                         }
-                        className={`inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-medium transition ${
-                          agentNameSaved
+                        className={`inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-medium transition ${agentNameSaved
                             ? "bg-slate-300 text-slate-600 cursor-not-allowed"
                             : "bg-slate-900 text-white shadow-sm hover:bg-slate-800"
-                        }`}
+                          }`}
                       >
                         {agentNameSaved
                           ? "Agent created"

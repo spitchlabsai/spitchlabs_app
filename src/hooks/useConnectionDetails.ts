@@ -74,7 +74,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { decodeJwt } from 'jose';
-import {createSupabaseBrowserClient} from '@/lib/supabase/client'
+import { createSupabaseBrowserClient } from '@/lib/supabase/client'
 import { ConnectionDetails } from '@/app/api/connection-details/route';
 import { useSupabaseUser } from '@/hooks/useSupabaseUser'; // Update path if needed
 
@@ -87,33 +87,33 @@ export default function useConnectionDetails() {
   const [error, setError] = useState<string | null>(null);
   const [agentName, setAgentName] = useState("Angel"); // default fallback
   const supabase = createSupabaseBrowserClient();
-  
-
-useEffect(() => {
-  const loadAgentName = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("agent_name")
-      .eq("id", user.id)
-      .single();
-
-    if (!error && data?.agent_name) {
-      setAgentName(data.agent_name);
-    }
-  };
-
-  loadAgentName();
-}, [user]);
 
 
+  useEffect(() => {
+    const loadAgentName = async () => {
+      if (!user) return;
 
-  const fetchConnectionDetails = useCallback(async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("agent_name")
+        .eq("id", user.id)
+        .single();
+
+      if (!error && data?.agent_name) {
+        setAgentName(data.agent_name);
+      }
+    };
+
+    loadAgentName();
+  }, [user]);
+
+
+
+  const fetchConnectionDetails = useCallback(async (campaignId?: string) => {
     if (userLoading) {
       return null; // Wait for user loading to complete
     }
-    
+
     if (!user) {
       setError('User not authenticated');
       return null;
@@ -141,6 +141,7 @@ useEffect(() => {
           name: user.user_metadata?.name || user.email?.split('@')[0],
           companyName: user.user_metadata?.companyName,
           agentName: agentName,
+          campaignId: campaignId,
         })
       });
 
@@ -168,7 +169,7 @@ useEffect(() => {
     return data;
   }, [user, userLoading]);
 
- 
+
   useEffect(() => {
     if (!userLoading && user) {
       fetchConnectionDetails();
@@ -186,11 +187,11 @@ useEffect(() => {
       if (!jwtPayload.exp) {
         return true;
       }
-      
+
       // Convert exp (seconds since epoch) to milliseconds and subtract buffer
       const expiresAt = new Date((jwtPayload.exp * 1000) - ONE_MINUTE_IN_MILLISECONDS);
       const now = new Date();
-      
+
       return now >= expiresAt; // Fixed the comparison logic
     } catch (error) {
       console.error('Error decoding JWT:', error);
@@ -198,9 +199,9 @@ useEffect(() => {
     }
   }, [connectionDetails?.participantToken]);
 
-  const existingOrRefreshConnectionDetails = useCallback(async () => {
+  const existingOrRefreshConnectionDetails = useCallback(async (campaignId?: string) => {
     if (isConnectionDetailsExpired() || !connectionDetails) {
-      return await fetchConnectionDetails();
+      return await fetchConnectionDetails(campaignId);
     } else {
       return connectionDetails;
     }
